@@ -1,0 +1,119 @@
+{
+    "resource": {
+        "js": {
+            "classNames": {
+                "uri": "/dist/static/res/d325e9ca0.classNames.js",
+                "type": "js",
+                "path": "src/lib/classNames.js"
+            },
+            "kernel": {
+                "uri": "/dist/static/res/3693beaf4.kernel.js",
+                "type": "js",
+                "path": "src/lib/kernel.js"
+            },
+            "quickling": {
+                "uri": "/dist/static/res/ec7adf48c.quickling.js",
+                "type": "js",
+                "path": "src/lib/quickling.js"
+            },
+            "React.Router": {
+                "uri": "/dist/static/res/08afa981b.router.js",
+                "type": "js",
+                "path": "src/lib/router.js"
+            },
+            "App": {
+                "uri": "/dist/static/res/1c0b9bf7c.app.js",
+                "type": "js",
+                "path": "src/static/js/app.jsx",
+                "deps": [
+                    "React.Router",
+                    "TodoFooter",
+                    "TodoItem",
+                    "TodoModel",
+                    "R5dEk"
+                ]
+            },
+            "TodoFooter": {
+                "uri": "/dist/static/res/2c85b7bb9.footer.js",
+                "type": "js",
+                "path": "src/static/js/footer.jsx",
+                "deps": [
+                    "R5dEk",
+                    "classNames"
+                ]
+            },
+            "widget_index": {
+                "uri": "/dist/static/res/ae191532c.app.js",
+                "type": "js",
+                "path": "src/static/js/app.js",
+                "deps": [
+                    "App"
+                ]
+            },
+            "main": {
+                "uri": "/dist/static/res/b9d571e11.index.js",
+                "type": "js",
+                "path": "src/static/js/index.js",
+                "deps": [
+                    "App"
+                ]
+            },
+            "TodoItem": {
+                "uri": "/dist/static/res/fecbc6a8f.todoItem.js",
+                "type": "js",
+                "path": "src/static/js/todoItem.jsx",
+                "deps": [
+                    "classNames"
+                ]
+            },
+            "TodoModel": {
+                "uri": "/dist/static/res/06ab2821c.todoModel.js",
+                "type": "js",
+                "path": "src/static/js/todoModel.js",
+                "deps": [
+                    "R5dEk"
+                ]
+            },
+            "VJS5Q": {
+                "uri": "/dist/static/res/6c612c442.react-with-addons.js",
+                "type": "js",
+                "path": "src/lib/react-with-addons.js"
+            },
+            "R5dEk": {
+                "uri": "/dist/static/res/c5c14c85b.utils.js",
+                "type": "js",
+                "path": "src/static/js/utils.js"
+            }
+        },
+        "css": {
+            "base-style": {
+                "uri": "/dist/static/res/3267f6926.base.css",
+                "type": "css",
+                "path": "src/static/css/base.css"
+            },
+            "index-style": {
+                "uri": "/dist/static/res/7da1ffab8.index.css",
+                "type": "css",
+                "path": "src/static/css/index.css"
+            }
+        }
+    },
+    "paths": {
+        "src/lib/classNames.js": "classNames",
+        "src/lib/kernel.js": "kernel",
+        "src/lib/quickling.js": "quickling",
+        "src/lib/router.js": "React.Router",
+        "src/static/js/app.jsx": "App",
+        "src/static/js/footer.jsx": "TodoFooter",
+        "src/static/js/app.js": "widget_index",
+        "src/static/js/index.js": "main",
+        "src/static/js/todoItem.jsx": "TodoItem",
+        "src/static/js/todoModel.js": "TodoModel",
+        "src/lib/react-with-addons.js": "VJS5Q",
+        "src/static/js/utils.js": "R5dEk",
+        "src/static/css/base.css": "base-style",
+        "src/static/css/index.css": "index-style"
+    },
+    "packages": {},
+    "cssClassMap": {}
+}
