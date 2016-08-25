@@ -1,0 +1,16 @@
+{
+    "name": "acemood/brisk",
+    "description": "PHP static resource loader framework",
+    "type": "project",
+    "require": {
+        "php": ">=5.5.13"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "AceMood",
+            "email": "zmike86@163.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
