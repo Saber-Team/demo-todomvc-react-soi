@@ -5,10 +5,12 @@
 ## 依赖
 
 确保开发机安装以下
-Node >= 4.0.0 
-PHP >= 5.5.13
 
-运行以下代码 安装soi最新版本
+Node >= 4.0.0 (可选, 编译代码使用)
+
+PHP >= 5.5.13 (必选)
+
+运行以下代码 安装soi最新版本 (可选, 编译代码使用)
 ```
 $ npm i -g soi
 $ soi -v
@@ -39,10 +41,12 @@ $ soi -v
 $ soi release dev
 ```
 
-关于编译工具soi, 可以参考[这里](github.com/Saber-Team/soi)
+关于编译工具soi, 可以[参考这里](https://github.com/Saber-Team/soi)
+
+只想看demo, clone当前代码库后直接进入工程目录, 执行以下代码
 
 ```
 $ sudo sh server.sh
 ```
 
-访问[页面http://localhost:80/](http://localhost:80/)
+然后访问页面[http://localhost:80/](http://localhost:80/)
