@@ -3,8 +3,9 @@
 /**
  * Class BriskPageView
  * 渲染页面的抽象类
+ * 
  */
-abstract class BriskPageView extends BriskStaticResourceResponse {
+abstract class BriskPageView extends Phobject {
 
     private static $mode_ajaxpipe = 'ajaxpipe';
     private static $mode_normal = 'normal';
@@ -13,19 +14,23 @@ abstract class BriskPageView extends BriskStaticResourceResponse {
     private $title = '';
     //页面渲染模式
     private $mode = null;
-    //页面需然渲染的分片
+    //页面需然渲染的分片id
     private $pagelets = array();
-    //页面分片
+    //页面分片的部件
     private $widgets = array();
 
+    //当前请求页面关联的response对象
+    private $response = null;
+
     function __construct($title = '') {
-        parent::__construct();
         $this->setTitle($title);
         if (BriskUtils::isAjaxPipe()) {
             $this->mode = self::$mode_ajaxpipe;
             $this->setPagelets($_GET['pagelets']);
+            $this->response = new BriskAjaxResponse();
         } else {
             $this->mode = self::$mode_normal;
+            $this->response = new BriskStaticResourceResponse();
         }
     }
 
@@ -66,6 +71,18 @@ abstract class BriskPageView extends BriskStaticResourceResponse {
         return $this->pagelets;
     }
 
+    final function setCDN($cdn) {
+        $this->response->setCDN($cdn);
+    }
+
+    final function getCDN() {
+        return $this->response->getCDN();
+    }
+
+    final function isPage() {
+        return true;
+    }
+
     /**
      * 渲染期间加载对应的部件
      * @param BriskWidgetView $widget
@@ -75,7 +92,7 @@ abstract class BriskPageView extends BriskStaticResourceResponse {
         $widget->setParentView($this);
         //正常渲染则直接输出部件html内容
         if ($this->mode === self::$mode_normal) {
-            return $widget->render();
+            return $widget->renderAsHTML();
         }
         //否则记录页面部件
         else {
@@ -86,6 +103,32 @@ abstract class BriskPageView extends BriskStaticResourceResponse {
 
     final function getWidgets() {
         return $this->widgets;
+    }
+
+    /**
+     * 记录请求依赖的外链资源
+     * @param string $name 工程目录资源路径
+     * @param string $source_name 空间
+     * @return mixed $this
+     * @throws Exception
+     */
+    final function requireResource($name, $source_name = 'brisk') {
+        return $this->response->requireResource($name, $source_name);
+    }
+
+    /**
+     * 将一张图片内联为dataUri的方式
+     * @param $name
+     * @param $source_name
+     * @return mixed
+     * @throws Exception
+     */
+    final function inlineImage($name, $source_name = 'brisk') {
+        return $this->response->requireResource($name, $source_name);
+    }
+
+    final function renderResourcesOfType($type) {
+        return $this->response->renderResourcesOfType($type);
     }
 
     /**
@@ -115,22 +158,26 @@ abstract class BriskPageView extends BriskStaticResourceResponse {
         return (string)hsprintf(
             $this->getTemplateString(),
             phutil_escape_html($this->title),
-            $this->renderResourcesOfType('css'),
+            $this->response->renderResourcesOfType('css'),
             new PhutilSafeHTML(''),
-            $this->renderResourcesOfType('js'));
+            $this->response->renderResourcesOfType('js'));
     }
 
-    //渲染页面成json
+    /**
+     * 渲染页面成json
+     * @return array
+     * @throws Exception
+     */
     protected function renderAsJSON() {
-        $response = array(
-            'html' => array(),
+        $res = array(
+            'payload' => array(),
             'js' => array(),
             'css' => array(),
             'script' => array(),
             'style' => array()
         );
 
-        //收集所有部件的html部分
+        //挑选需要渲染的部件
         foreach ($this->pagelets as $pageletId) {
             $widget = $this->widgets[$pageletId];
             if (isset($widget)) {
@@ -141,41 +188,23 @@ abstract class BriskPageView extends BriskStaticResourceResponse {
                 ));
             }
 
-            $json = $widget->renderAsJSON();
-            $response['html'][$pageletId] = $json['html'];
-            $response['js'][] = $json['js'];
-            $response['css'][] = $json['css'];
-            $response['script'][] = $json['script'];
-            $response['style'][] = $json['style'];
+            $res['payload'][$pageletId] = $widget->renderAsJSON();
+            $res['js'] = $this->response->renderResourcesOfType('js');
+            $res['css'] = $this->response->renderResourcesOfType('css');
+            $res['script'] = $this->response->produceScript();
         }
 
-
         if ($this->metadata) {
-            $response['metadata'] = $this->metadata;
+            $res['metadata'] = $this->metadata;
             $this->metadata = array();
         }
 
         if ($this->behaviors) {
-            $response['behaviors'] = $this->behaviors;
+            $res['behaviors'] = $this->behaviors;
             $this->behaviors = array();
         }
 
-        //更新$this->packaged
-        $this->resolveResources();
-        $resources = array();
-
-        foreach ($this->packaged as $source_name => $resource_names) {
-            $map = BriskResourceMap::getNamedInstance($source_name);
-            foreach ($resource_names as $resource_name) {
-                $resources[] = $this->getURI($map, $resource_name);
-            }
-        }
-
-        if ($resources) {
-            $response['resources'] = $resources;
-        }
-
-        return $response;
+        return json_encode($res);
     }
 
     /**
