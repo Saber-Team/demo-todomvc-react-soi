@@ -8,9 +8,13 @@ abstract class BriskResourcesOnDisk extends BriskResources {
 
     //resource.json转换来的资源表
     private $map;
+    private $packages;
 
     //获取resource.json所在位置
     abstract public function getPathToMap();
+
+    //获取packages.json位置
+    abstract public function getPathToPackageMap();
 
     // return source code directory
     abstract public function getPathToResources();
@@ -24,7 +28,7 @@ abstract class BriskResourcesOnDisk extends BriskResources {
         // todo 这里假设没有通过soi指定cdn, 或者是通过pageview设置的cdn, 此时uri是编译目录的相对路径
         $uri = preg_replace('/^\//', '', $symbolMap[$type][$symbol]['uri']);
 
-        return $this->getPathToResources() . DIRECTORY_SEPARATOR . $name;
+        return $this->getPathToResources() . DIRECTORY_SEPARATOR . $uri;
     }
 
     /**
@@ -42,7 +46,11 @@ abstract class BriskResourcesOnDisk extends BriskResources {
         return (int)filemtime($this->getPathToResource($name));
     }
 
-    //加载resource.json并转化成php数组
+    /**
+     * 加载resource.json并转化成php数组
+     * @return mixed
+     * @throws FilesystemException
+     */
     public function loadMap() {
         if ($this->map === null) {
             $mapPath = $this->getPathToMap();
@@ -50,5 +58,19 @@ abstract class BriskResourcesOnDisk extends BriskResources {
             $this->map = json_decode($data, true);
         }
         return $this->map;
+    }
+
+    /**
+     * 加载packages.json并转化成php数组
+     * @return mixed
+     * @throws FilesystemException
+     */
+    public function loadPackages() {
+        if ($this->map === null) {
+            $mapPath = $this->getPathToPackageMap();
+            $data = Filesystem::readFile($mapPath);
+            $this->packages = json_decode($data, true);
+        }
+        return $this->packages;
     }
 }

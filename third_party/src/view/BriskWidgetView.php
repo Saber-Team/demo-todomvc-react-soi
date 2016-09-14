@@ -4,7 +4,7 @@
  * Class BriskWidgetView
  * 所有页面分片部件的基类.
  * 同一个部件类的不同实例可在多个页面通过id,以及mode区分
- * WidgetView应对不用渲染模式需要提供两个方法进行渲染,
+ * WidgetView对不用渲染模式需要提供两个方法进行渲染,
  * 1. 顶级页面正常渲染, 部件提供renderAsHTML方法,
  *    依据初始化时指定的模式渲染, normal, bigrender 或者lazyrender
  * 2. 顶级页面通过quickling渲染, 部件提供renderAsJSON方法
@@ -117,11 +117,35 @@ abstract class BriskWidgetView extends Phobject {
         }
     }
 
-    //获取顶层的pageview对象
+    /**
+     * 部件中内联静态资源
+     * @param string $name
+     * @param string|null $source_name
+     * @throws Exception
+     */
+    final function inlineResource($name, $source_name = 'brisk') {
+        if (!isset($this->parentView)) {
+            throw new Exception(pht(
+                'Could not invoke requireResource with no parentView set. %s',
+                __CLASS__
+            ));
+        }
+
+        //直接记录在最顶层的page view中
+        $topView = $this->getTopLevelView();
+        if (isset($topView)) {
+            $topView->inlineResource($name, $source_name);
+        }
+    }
+
+    /**
+     * 获取顶层的pageview对象
+     * @return BriskPageView
+     */
     final function getTopLevelView() {
-        $parent = null;
-        while (isset($this->parentView) && !$this->parentView->isPage()) {
-            $parent = $this->parentView;
+        $parent = $this->getParentView();
+        while (isset($parent) && !($parent->isPage())) {
+            $parent = $parent->getParentView();
         }
         return $parent;
     }
@@ -132,13 +156,12 @@ abstract class BriskWidgetView extends Phobject {
      */
     public function renderAsHTML() {
         $html = '';
+        $this->willRender();
         switch ($this->mode) {
             case self::$mode_normal:
-                $this->willRender();
                 $html = $this->produceHTML();
                 break;
             case self::$mode_bigrender:
-                $this->willRender();
                 $html = phutil_tag(
                     'textarea',
                     array(
@@ -207,12 +230,12 @@ abstract class BriskWidgetView extends Phobject {
         );
     }
 
+    //渲染前触发, 子类可重写
+    protected function willRender() {}
+
     /**
      * 返回部件的模版字符串, 各子类具体实现
      * @return string
      */
     abstract function getTemplateString();
-
-    //渲染前触发
-    abstract function willRender();
 }

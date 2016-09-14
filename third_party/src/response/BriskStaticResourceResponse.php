@@ -9,17 +9,15 @@ class BriskStaticResourceResponse extends Phobject {
     //动态设置cdn
     protected $cdn = '';
 
+    //默认打印全部资源表
+    protected $printType = 3;
+
     //收集所有打印的外链资源唯一路径
     protected $symbols = array();
-
     //记录打印的内联资源唯一id
     protected $inlined = array();
-    protected $styles = array();
-    protected $scripts = array();
-
     //是否需要对收集的资源进行解析
     protected $needsResolve = true;
-
     //命名空间划分,记录外链引用的资源
     protected $packaged;
 
@@ -36,37 +34,54 @@ class BriskStaticResourceResponse extends Phobject {
 
     public function __construct() {}
 
-    public function addMetadata($metadata) {
+    final function addMetadata($metadata) {
         $id = count($this->metadata);
         $this->metadata[$id] = $metadata;
         return $this;
     }
 
-    public function setPostprocessorKey($postprocessor_key) {
+    final function getMetadata() {
+        return $this->metadata;
+    }
+
+    final function setPostprocessorKey($postprocessor_key) {
         $this->postprocessorKey = $postprocessor_key;
         return $this;
     }
 
-    public function getPostprocessorKey() {
+    final function getPostprocessorKey() {
         return $this->postprocessorKey;
     }
 
-    public function setCDN($cdn) {
+    final function setCDN($cdn) {
         $this->cdn = $cdn;
     }
 
-    public function getCDN() {
+    final function getCDN() {
         return $this->cdn;
     }
 
     /**
+     * 设置资源表打印类型
+     * @param integer $type
+     */
+    final function setPrintType($type) {
+        $this->printType = $type;
+    }
+
+    final function getPrintType() {
+        return $this->printType;
+    }
+
+    /**
+     * todo
      * Register a behavior for initialization.
      *
      * NOTE: If `$config` is empty, a behavior will execute only once even if it
      * is initialized multiple times. If `$config` is nonempty, the behavior will
      * be invoked once for each configuration.
      */
-    public function initBehavior($behavior, array $config = array(), $source_name = null) {
+    final function initBehavior($behavior, array $config = array(), $source_name = null) {
         $this->requireResource($behavior, $source_name);
         if (empty($this->behaviors[$behavior])) {
             $this->behaviors[$behavior] = array();
@@ -75,6 +90,28 @@ class BriskStaticResourceResponse extends Phobject {
             $this->behaviors[$behavior][] = $config;
         }
         return $this;
+    }
+
+    final function getBehavior() {
+        return $this->behaviors;
+    }
+
+    /**
+     * 根据资源名获取线上路径
+     * @param BriskResourceMap $map
+     * @param $name
+     * @return string
+     */
+    final function getURI(BriskResourceMap $map, $name) {
+        $uri = $map->getURIForName($name);
+
+        // If we have a postprocessor selected, add it to the URI.
+        $postprocessor_key = $this->getPostprocessorKey();
+        if ($postprocessor_key) {
+            $uri = preg_replace('@^/res/@', '/res/' . $postprocessor_key . 'X/', $uri);
+        }
+
+        return $this->cdn . $uri;
     }
 
     /**
@@ -100,11 +137,13 @@ class BriskStaticResourceResponse extends Phobject {
         if (!array_key_exists($source_name, $this->symbols)) {
             $this->symbols[$source_name] = array();
         }
+
         $symbols = $this->symbols[$source_name];
+        $resource_type = $map->getResourceTypeForName($name);
 
         //之前渲染过,不区分外链还是内联
         if (array_search($name, $symbols, true) > -1 ||
-            isset($this->inlined[$source_name][$name])) {
+            isset($this->inlined[$source_name][$resource_type][$name])) {
             return $this;
         }
 
@@ -115,9 +154,9 @@ class BriskStaticResourceResponse extends Phobject {
     }
 
     /**
-     * 资源内联 todo
-     * @param $name
-     * @param $source_name
+     * 资源内联
+     * @param string $name 资源在工程目录的路径
+     * @param string $source_name 项目空间
      * @return PhutilSafeHTML|string
      * @throws Exception
      */
@@ -133,33 +172,33 @@ class BriskStaticResourceResponse extends Phobject {
             ));
         }
 
+        $resource_type = $map->getResourceTypeForName($name);
+
         //之前已经内联渲染过
-        if (isset($this->inlined[$source_name][$name])) {
+        if (isset($this->inlined[$source_name][$resource_type][$name])) {
             return '';
         }
 
         //立即渲染,不优化输出位置
         $fileContent = $map->getResourceDataForName($name, $source_name);
-        $this->inlined[$source_name][$name] = true;
-
-        $type = $map->getResourceTypeForName($name);
-        if ($type === 'js') {
-            return self::renderInlineScript($fileContent);
-        } else if ($type === 'css') {
-            return self::renderInlineStyle($fileContent);
+        $this->inlined[$source_name][$resource_type][$name] = $fileContent;
+        if ($resource_type === 'js') {
+            return BriskUtils::renderInlineScript($fileContent);
+        } else if ($resource_type === 'css') {
+            return BriskUtils::renderInlineStyle($fileContent);
         }
 
         return '';
     }
 
     /**
-     * 将一张图片内联为dataUri的方式
+     * 将图片内联为dataUri的方式
      * @param $name
      * @param $source_name
      * @return mixed
      * @throws Exception
      */
-    public function inlineImage($name, $source_name = 'brisk') {
+    public function generateDataURI($name, $source_name = 'brisk') {
         $map = BriskResourceMap::getNamedInstance($source_name);
         $symbol = $map->getNameMap()[$name];
         if ($symbol === null) {
@@ -188,43 +227,19 @@ class BriskStaticResourceResponse extends Phobject {
         return $this->renderPackagedResources($map, $packaged);
     }
 
-    //渲染输出一种资源类型的html片段
+    /**
+     * 渲染输出一种资源类型的html片段
+     * @param string $type 资源类型
+     * @return PhutilSafeHTML
+     * @throws Exception
+     */
     public function renderResourcesOfType($type) {
         //更新$this->packaged
         $this->resolveResources();
         $result = array();
-        $print = array();
-
-        if ($type === 'js') {
-            $print = array(
-                'resourceMap' => array(
-                    'js' => array(),
-                    'css' => array()
-                )
-            );
-        }
 
         foreach ($this->packaged as $source_name => $resource_names) {
             $map = BriskResourceMap::getNamedInstance($source_name);
-
-            //记录到打印的资源表
-            if ($type === 'js') {
-                $symbolMap = $map->getSymbolMap();
-                foreach ($symbolMap['js'] as $symbol => $js) {
-                    unset($js['path']);
-                    unset($js['within']);
-                    $js['uri'] = self::getCDN() . $js['uri'];
-                }
-
-                foreach ($symbolMap['css'] as $symbol => $css) {
-                    unset($css['path']);
-                    unset($css['within']);
-                    $css['uri'] = self::getCDN() . $css['uri'];
-                }
-
-                $print['resourceMap'] = $symbolMap;
-            }
-
             $resources_of_type = array();
             foreach ($resource_names as $resource_name) {
                 $resource_type = $map->getResourceTypeForName($resource_name);
@@ -237,24 +252,10 @@ class BriskStaticResourceResponse extends Phobject {
         }
 
         if ($type === 'js') {
-            $mapCode = self::renderInlineScript('var kerneljs = ' . json_encode($print) . ';');
-            array_unshift($result, $mapCode);
+            $this->printResourceMap($result);
         }
 
         return phutil_implode_html('', $result);
-    }
-
-    //根据资源名获取线上路径
-    public function getURI(BriskResourceMap $map, $name) {
-        $uri = $map->getURIForName($name);
-
-        // If we have a postprocessor selected, add it to the URI.
-        $postprocessor_key = $this->getPostprocessorKey();
-        if ($postprocessor_key) {
-            $uri = preg_replace('@^/res/@', '/res/' . $postprocessor_key . 'X/', $uri);
-        }
-
-        return $this->cdn . $uri;
     }
 
     /**
@@ -322,43 +323,109 @@ class BriskStaticResourceResponse extends Phobject {
         ));
     }
 
-    //根据内容渲染内联style
-    protected static function renderInlineStyle($data) {
-        if (stripos($data, '</style>') !== false) {
-            throw new Exception(pht(
-                'Literal %s is not allowed inside inline style.',
-                '</style>'));
+    /**
+     * 输出打印资源表信息
+     * @param array $result
+     * @throws Exception
+     */
+    protected function printResourceMap(&$result) {
+        $res = array(
+            'resourceMap' => array(
+                'js' => array(),
+                'css' => array()
+            )
+        );
+
+        switch ($this->getPrintType()) {
+            case BriskPrintType::$ALL_RES:
+                $this->buildAllRes($res);
+                $code = BriskUtils::renderInlineScript(
+                    'var kerneljs = ' . json_encode($res) . ';'
+                );
+                array_unshift($result, $code);
+                break;
+            case BriskPrintType::$ONLY_ASYNC:
+                $this->buildAsyncRes($res);
+                $code = BriskUtils::renderInlineScript(
+                    'var kerneljs = ' . json_encode($res) . ';'
+                );
+                array_unshift($result, $code);
+                break;
         }
-        if (strpos($data, '<!') !== false) {
-            throw new Exception(pht(
-                'Literal %s is not allowed inside inline style.',
-                '<!'));
-        }
-        // We don't use <![CDATA[ ]]> because it is ignored by HTML parsers. We
-        // would need to send the document with XHTML content type.
-        return phutil_tag(
-            'style',
-            array(),
-            phutil_safe_html($data));
     }
 
-    //根据内容渲染内联script
-    protected static function renderInlineScript($data) {
-        if (stripos($data, '</script>') !== false) {
-            throw new Exception(pht(
-                'Literal %s is not allowed inside inline script.',
-                '</script>'));
+    protected function buildAllRes(&$res) {
+        foreach ($this->packaged as $source_name => $resource_names) {
+            $map = BriskResourceMap::getNamedInstance($source_name);
+            //记录到打印的资源表
+            $symbolMap = $map->getSymbolMap();
+            foreach ($symbolMap['js'] as $symbol => $js) {
+                unset($js['path']);
+                unset($js['within']);
+                $js['uri'] = self::getCDN() . $js['uri'];
+            }
+
+            foreach ($symbolMap['css'] as $symbol => $css) {
+                unset($css['path']);
+                unset($css['within']);
+                $css['uri'] = self::getCDN() . $css['uri'];
+            }
+
+            $res['resourceMap']['js'] = array_merge(
+                $res['resourceMap']['js'],
+                $symbolMap['js']
+            );
+            $res['resourceMap']['css'] = array_merge(
+                $res['resourceMap']['css'],
+                $symbolMap['css']
+            );
         }
-        if (strpos($data, '<!') !== false) {
-            throw new Exception(pht(
-                'Literal %s is not allowed inside inline script.',
-                '<!'));
+    }
+
+    protected function buildAsyncRes(&$res) {
+        foreach ($this->packaged as $source_name => $resource_names) {
+            $map = BriskResourceMap::getNamedInstance($source_name);
+            //记录到打印的资源表
+            $symbolMap = $map->getSymbolMap();
+            foreach ($symbolMap['js'] as $symbol => $js) {
+                foreach ($js['asyncLoaded'] as $required_symbol) {
+                    $this->addJsRes($required_symbol, $symbolMap, $res);
+                }
+            }
         }
-        // We don't use <![CDATA[ ]]> because it is ignored by HTML parsers. We
-        // would need to send the document with XHTML content type.
-        return phutil_tag(
-            'script',
-            array('type' => 'text/javascript'),
-            phutil_safe_html($data));
+    }
+
+    protected function addJsRes($required_symbol, $map, &$res) {
+        if (!isset($res['resourceMap']['js'][$required_symbol])) {
+            $required_js = $map['js'][$required_symbol];
+            $res['resourceMap']['js'][$required_symbol] = array(
+                'type' => 'js',
+                'uri' => self::getCDN() . $required_js['uri'],
+                'deps' => $required_js['deps'],
+                'css' => $required_js['css']
+            );
+            // 加载$required_js的依赖
+            foreach ($required_js['css'] as $required_css_symbol) {
+                $this->addCssRes($required_css_symbol, $map, $res);
+            }
+            foreach ($required_js['asyncLoaded'] as $required_js_symbol) {
+                $this->addJsRes($required_js_symbol, $map, $res);
+            }
+        }
+    }
+
+    protected function addCssRes($required_symbol, $map, &$res) {
+        if (!isset($res['resourceMap']['css'][$required_symbol])) {
+            $required_css = $map['css'][$required_symbol];
+            $res['resourceMap']['css'][$required_symbol] = array(
+                'type' => 'css',
+                'uri' => self::getCDN() . $required_css['uri'],
+                'css' => $required_css['css']
+            );
+            // 加载$required_css的依赖
+            foreach ($required_css['css'] as $required_css_symbol) {
+                $this->addCssRes($required_css_symbol, $map, $res);
+            }
+        }
     }
 }

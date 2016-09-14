@@ -2,14 +2,17 @@
 
 class TodoMVCPageView extends BriskPageView {
 
-    //渲染页面成html
-    public function renderAsHTML() {
+    public function loadGlobalResources() {
         $this->requireResource('src/static/css/base.css');
         $this->requireResource('src/static/css/index.css');
         $this->requireResource('src/lib/kernel.js');
         $this->requireResource('src/lib/classNames.js');
         $this->requireResource('src/lib/react-with-addons.js');
-        $this->requireResource('src/static/js/index.js', 'brisk');
+        $this->requireResource('src/static/js/index.js');
+    }
+
+    //渲染页面成html
+    public function renderAsHTML() {
 
         $body = <<<EOTEMPLATE
 <section class="todoapp"></section>

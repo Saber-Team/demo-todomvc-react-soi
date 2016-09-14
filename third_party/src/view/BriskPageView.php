@@ -3,7 +3,6 @@
 /**
  * Class BriskPageView
  * 渲染页面的抽象类
- * 
  */
 abstract class BriskPageView extends Phobject {
 
@@ -34,8 +33,14 @@ abstract class BriskPageView extends Phobject {
         }
     }
 
+    final function addMetadata($metadata) {
+        $this->response->addMetadata($metadata);
+        return $this;
+    }
+
     final function setTitle($title) {
         $this->title = $title;
+        return $this;
     }
 
     final function getTitle() {
@@ -48,6 +53,7 @@ abstract class BriskPageView extends Phobject {
         } else {
             $this->mode = self::$mode_normal;
         }
+        return $this;
     }
 
     final function getMode() {
@@ -57,14 +63,16 @@ abstract class BriskPageView extends Phobject {
     /**
      * 设置当前页面的pagelets
      * @param {array|string} $pagelets
+     * @return mixed
      */
     final function setPagelets($pagelets) {
         if (!is_array($pagelets)) {
             $pagelets = array($pagelets);
         }
         foreach ($pagelets as $id) {
-            $this->pagelets[$id] = true;
+            $this->pagelets[] = $id;
         }
+        return $this;
     }
 
     final function getPagelets() {
@@ -73,30 +81,43 @@ abstract class BriskPageView extends Phobject {
 
     final function setCDN($cdn) {
         $this->response->setCDN($cdn);
+        return $this;
     }
 
     final function getCDN() {
         return $this->response->getCDN();
     }
 
+    /**
+     * 组件类型是页面
+     * @return bool
+     */
     final function isPage() {
         return true;
     }
 
     /**
-     * 渲染期间加载对应的部件
+     * 设置资源表打印类型
+     * @param integer $type
+     */
+    final function setPrintType($type) {
+        if (isset($this->response)) {
+            $this->response->setPrintType($type);
+        }
+    }
+
+    /**
+     * 渲染期间加载对应的部件.
+     * 正常渲染则直接输出部件html内容, 否则记录页面部件
      * @param BriskWidgetView $widget
      * @return PhutilSafeHTML|$this
      */
     final function loadWidget($widget) {
         $widget->setParentView($this);
-        //正常渲染则直接输出部件html内容
         if ($this->mode === self::$mode_normal) {
             return $widget->renderAsHTML();
-        }
-        //否则记录页面部件
-        else {
-            $this->widgets[] = $widget;
+        } else {
+            $this->widgets[$widget->getId()] = $widget;
             return $this;
         }
     }
@@ -117,16 +138,32 @@ abstract class BriskPageView extends Phobject {
     }
 
     /**
-     * 将一张图片内联为dataUri的方式
+     * 内联资源
+     * @param string $name 工程目录资源路径
+     * @param string $source_name 空间
+     * @return mixed
+     * @throws Exception
+     */
+    final function inlineResource($name, $source_name = 'brisk') {
+        return $this->response->inlineResource($name, $source_name);
+    }
+
+    /**
+     * 返回图片内联为dataUri的方式
      * @param $name
      * @param $source_name
      * @return mixed
      * @throws Exception
      */
-    final function inlineImage($name, $source_name = 'brisk') {
-        return $this->response->requireResource($name, $source_name);
+    final function generateDataURI($name, $source_name = 'brisk') {
+        return $this->response->generateDataURI($name, $source_name);
     }
 
+    /**
+     * 将一种类型的资源输出到页面
+     * @param string $type 资源类型如js, css
+     * @return PhutilSafeHTML
+     */
     final function renderResourcesOfType($type) {
         return $this->response->renderResourcesOfType($type);
     }
@@ -139,9 +176,13 @@ abstract class BriskPageView extends Phobject {
         $html = '';
         switch ($this->mode) {
             case self::$mode_ajaxpipe:
+                //这里不需要加载页面全局的资源, 不再调用loadGlobalResources
+                $this->willRender();
                 $html = $this->renderAsJSON();
                 break;
             case self::$mode_normal:
+                $this->willRender();
+                $this->loadGlobalResources();
                 $html = $this->renderAsHTML();
                 break;
         }
@@ -160,7 +201,8 @@ abstract class BriskPageView extends Phobject {
             phutil_escape_html($this->title),
             $this->response->renderResourcesOfType('css'),
             new PhutilSafeHTML(''),
-            $this->response->renderResourcesOfType('js'));
+            $this->response->renderResourcesOfType('js')
+        );
     }
 
     /**
@@ -170,17 +212,12 @@ abstract class BriskPageView extends Phobject {
      */
     protected function renderAsJSON() {
         $res = array(
-            'payload' => array(),
-            'js' => array(),
-            'css' => array(),
-            'script' => array(),
-            'style' => array()
+            'payload' => array()
         );
 
         //挑选需要渲染的部件
         foreach ($this->pagelets as $pageletId) {
-            $widget = $this->widgets[$pageletId];
-            if (isset($widget)) {
+            if (!isset($this->getWidgets()[$pageletId])) {
                 throw new Exception(pht(
                     'No widget with id %s found in %s',
                     $pageletId,
@@ -188,20 +225,19 @@ abstract class BriskPageView extends Phobject {
                 ));
             }
 
+            $widget = $this->getWidgets()[$pageletId];
+
             $res['payload'][$pageletId] = $widget->renderAsJSON();
             $res['js'] = $this->response->renderResourcesOfType('js');
             $res['css'] = $this->response->renderResourcesOfType('css');
             $res['script'] = $this->response->produceScript();
+            $res['style'] = $this->response->produceStyle();
         }
 
-        if ($this->metadata) {
-            $res['metadata'] = $this->metadata;
-            $this->metadata = array();
-        }
-
-        if ($this->behaviors) {
-            $res['behaviors'] = $this->behaviors;
-            $this->behaviors = array();
+        // 需要元数据但不需要behavior
+        $metadata = $this->response->getMetadata();
+        if (!empty($metadata)) {
+            $res['metadata'] = $metadata;
         }
 
         return json_encode($res);
@@ -226,5 +262,11 @@ abstract class BriskPageView extends Phobject {
     </html>
 EOTEMPLATE;
     }
+
+    //渲染前触发, 子类可重写
+    protected function willRender() {}
+
+    //全页面渲染的时候加载页面级别的资源
+    abstract function loadGlobalResources();
 
 }
