@@ -5,9 +5,10 @@ class TodoMVCPageView extends BriskPageView {
     public function loadGlobalResources() {
         $this->requireResource('src/static/css/base.css');
         $this->requireResource('src/static/css/index.css');
-        $this->requireResource('src/lib/kernel.js');
+        $this->requireResource('src/lib/modux.js');
         $this->requireResource('src/lib/classNames.js');
-        $this->requireResource('src/lib/react-with-addons.js');
+        $this->requireResource('src/lib/react.js');
+        $this->requireResource('src/lib/react.dom.js');
         $this->requireResource('src/static/js/index.js');
     }
 

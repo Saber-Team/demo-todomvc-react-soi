@@ -8,7 +8,7 @@
  */
 final class BriskSantaResources extends BriskResourcesOnDisk {
 
-    private $distDirectory = 'dist/';
+    private $distDirectory = '/';
     private $mapPath = 'dist/resource.json';
 
     //项目名用作命名空间

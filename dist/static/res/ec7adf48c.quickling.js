@@ -1,1 +1,0 @@
-!function(e){"use strict";var t={};t.delegate=function(e){},t.fetch=function(e,t){var n=new XMLHttpRequest;n.open("GET",e),n.setRequestHeader("X-Requested-With","XMLHttpRequest"),n.onreadystatechange=function(){4===n.readyState&&200===n.status&&t(JSON.parse(n.responseText))},n.send(null)},t.register=function(e,t){},e.Quickling=t}(this);

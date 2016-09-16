@@ -1,0 +1,214 @@
+{
+  "version": "0.1",
+  "objects": [
+    {
+      "type": "js",
+      "path": "src/lib/classNames.js",
+      "id": "classNames",
+      "_requiredCSSMap": {},
+      "_requiredModuleMap": {},
+      "_requiredAsyncModuleMap": {},
+      "_requiredTextToResolvedPath": {},
+      "isModule": true,
+      "mtime": 1473935551000
+    },
+    {
+      "type": "js",
+      "path": "src/lib/kernel.js",
+      "id": "kernel",
+      "_requiredCSSMap": {},
+      "_requiredModuleMap": {},
+      "_requiredAsyncModuleMap": {},
+      "_requiredTextToResolvedPath": {},
+      "isPermanent": true,
+      "mtime": 1473935551000
+    },
+    {
+      "type": "js",
+      "path": "src/lib/modux.js",
+      "id": "modux",
+      "_requiredCSSMap": {},
+      "_requiredModuleMap": {},
+      "_requiredAsyncModuleMap": {},
+      "_requiredTextToResolvedPath": {},
+      "isPermanent": true,
+      "mtime": 1474010260000
+    },
+    {
+      "type": "js",
+      "path": "src/lib/quickling.js",
+      "id": "quickling",
+      "_requiredCSSMap": {},
+      "_requiredModuleMap": {},
+      "_requiredAsyncModuleMap": {},
+      "_requiredTextToResolvedPath": {},
+      "mtime": 1473935551000
+    },
+    {
+      "type": "js",
+      "path": "src/lib/react.dom.js",
+      "id": "src/lib/react.dom.js",
+      "_requiredCSSMap": {},
+      "_requiredModuleMap": {},
+      "_requiredAsyncModuleMap": {},
+      "_requiredTextToResolvedPath": {},
+      "mtime": 1474035209000
+    },
+    {
+      "type": "js",
+      "path": "src/lib/react.js",
+      "id": "src/lib/react.js",
+      "_requiredCSSMap": {},
+      "_requiredModuleMap": {},
+      "_requiredAsyncModuleMap": {},
+      "_requiredTextToResolvedPath": {},
+      "isPermanent": true,
+      "mtime": 1474035741000
+    },
+    {
+      "type": "js",
+      "path": "src/lib/router.js",
+      "id": "React.Router",
+      "_requiredCSSMap": {},
+      "_requiredModuleMap": {},
+      "_requiredAsyncModuleMap": {},
+      "_requiredTextToResolvedPath": {},
+      "isModule": true,
+      "mtime": 1473935551000
+    },
+    {
+      "type": "css",
+      "path": "src/static/css/base.css",
+      "id": "base-style",
+      "_requiredCSSMap": {},
+      "_spriteMap": {},
+      "_requiredTextToResolvedPath": {},
+      "mtime": 1473935551000
+    },
+    {
+      "type": "css",
+      "path": "src/static/css/index.css",
+      "id": "index-style",
+      "_requiredCSSMap": {},
+      "_spriteMap": {},
+      "_requiredTextToResolvedPath": {},
+      "mtime": 1473935551000
+    },
+    {
+      "type": "js",
+      "path": "src/static/js/app.jsx",
+      "id": "App",
+      "_requiredCSSMap": {},
+      "_requiredModuleMap": {
+        "React.Router": true,
+        "TodoFooter": true,
+        "TodoItem": true,
+        "TodoModel": true,
+        "./utils.js": true
+      },
+      "_requiredAsyncModuleMap": {},
+      "_requiredTextToResolvedPath": {
+        "React.Router": "src/lib/router.js",
+        "TodoFooter": "src/static/js/footer.jsx",
+        "TodoItem": "src/static/js/todoItem.jsx",
+        "TodoModel": "src/static/js/todoModel.js",
+        "./utils.js": "src/static/js/utils.js"
+      },
+      "isModule": true,
+      "requiredModules": [
+        "React.Router",
+        "TodoFooter",
+        "TodoItem",
+        "TodoModel",
+        "src/static/js/utils.js"
+      ],
+      "mtime": 1474036240000
+    },
+    {
+      "type": "js",
+      "path": "src/static/js/footer.jsx",
+      "id": "TodoFooter",
+      "_requiredCSSMap": {},
+      "_requiredModuleMap": {
+        "./utils": true,
+        "classNames": true
+      },
+      "_requiredAsyncModuleMap": {},
+      "_requiredTextToResolvedPath": {
+        "./utils": "src/static/js/utils.js",
+        "classNames": "src/lib/classNames.js"
+      },
+      "isModule": true,
+      "requiredModules": [
+        "src/static/js/utils.js",
+        "classNames"
+      ],
+      "mtime": 1474036246000
+    },
+    {
+      "type": "js",
+      "path": "src/static/js/index.js",
+      "id": "main",
+      "_requiredCSSMap": {},
+      "_requiredModuleMap": {
+        "./app.jsx": true
+      },
+      "_requiredAsyncModuleMap": {},
+      "_requiredTextToResolvedPath": {
+        "./app.jsx": "src/static/js/app.jsx"
+      },
+      "isEntryPoint": true,
+      "requiredModules": [
+        "App"
+      ],
+      "mtime": 1473935551000
+    },
+    {
+      "type": "js",
+      "path": "src/static/js/todoItem.jsx",
+      "id": "TodoItem",
+      "_requiredCSSMap": {},
+      "_requiredModuleMap": {
+        "classNames": true
+      },
+      "_requiredAsyncModuleMap": {},
+      "_requiredTextToResolvedPath": {
+        "classNames": "src/lib/classNames.js"
+      },
+      "isModule": true,
+      "requiredModules": [
+        "classNames"
+      ],
+      "mtime": 1473935551000
+    },
+    {
+      "type": "js",
+      "path": "src/static/js/todoModel.js",
+      "id": "TodoModel",
+      "_requiredCSSMap": {},
+      "_requiredModuleMap": {
+        "./utils": true
+      },
+      "_requiredAsyncModuleMap": {},
+      "_requiredTextToResolvedPath": {
+        "./utils": "src/static/js/utils.js"
+      },
+      "isModule": true,
+      "requiredModules": [
+        "src/static/js/utils.js"
+      ],
+      "mtime": 1473935551000
+    },
+    {
+      "type": "js",
+      "path": "src/static/js/utils.js",
+      "id": "src/static/js/utils.js",
+      "_requiredCSSMap": {},
+      "_requiredModuleMap": {},
+      "_requiredAsyncModuleMap": {},
+      "_requiredTextToResolvedPath": {},
+      "isModule": true,
+      "mtime": 1473935551000
+    }
+  ]
+}

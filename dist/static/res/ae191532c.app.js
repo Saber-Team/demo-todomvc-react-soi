@@ -1,1 +1,0 @@
-kerneljs.exec("widget_index",function(e,t,n){var r=document.querySelector("textarea"),o=r.getAttribute("data-pageletId"),i=document.getElementById(o);i.innerHTML=r.value,document.body.removeChild(r);var a=e("App");a.render()});

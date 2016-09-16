@@ -11,7 +11,7 @@ soi.config.set('forceRescan', true);
 soi.release.task('dev',
     {
       dir: './',
-      mapTo: './dist/resource.json',
+      mapTo: './dist/',
       domain: '',
       scandirs: ['src'],
       loaders: [
@@ -28,7 +28,7 @@ soi.release.task('dev',
     .addRule("src/**", {
       to : '/dist/static/res/'
     })
-    .use('wrapper', {define: '__d'})
+    .use('modux')
     .use('clean-css')
     .use('messid', {ext: ['js', 'css']})
     .use('uglify')

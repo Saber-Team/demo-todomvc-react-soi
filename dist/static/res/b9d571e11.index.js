@@ -1,1 +1,0 @@
-kerneljs.exec("main",function(e,t,n){var r=e("App");r.render()});

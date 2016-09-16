@@ -2,7 +2,7 @@
     "resource": {
         "js": {
             "classNames": {
-                "uri": "/dist/static/res/d325e9ca0.classNames.js",
+                "uri": "/dist/static/res/fab6ab2bb.classNames.js",
                 "type": "js",
                 "path": "src/lib/classNames.js"
             },
@@ -11,18 +11,23 @@
                 "type": "js",
                 "path": "src/lib/kernel.js"
             },
+            "modux": {
+                "uri": "/dist/static/res/cc4bd683b.modux.js",
+                "type": "js",
+                "path": "src/lib/modux.js"
+            },
             "quickling": {
-                "uri": "/dist/static/res/ec7adf48c.quickling.js",
+                "uri": "/dist/static/res/bacb625ff.quickling.js",
                 "type": "js",
                 "path": "src/lib/quickling.js"
             },
             "React.Router": {
-                "uri": "/dist/static/res/08afa981b.router.js",
+                "uri": "/dist/static/res/5b139cecf.router.js",
                 "type": "js",
                 "path": "src/lib/router.js"
             },
             "App": {
-                "uri": "/dist/static/res/1c0b9bf7c.app.js",
+                "uri": "/dist/static/res/a9369931b.app.js",
                 "type": "js",
                 "path": "src/static/js/app.jsx",
                 "deps": [
@@ -34,7 +39,7 @@
                 ]
             },
             "TodoFooter": {
-                "uri": "/dist/static/res/2c85b7bb9.footer.js",
+                "uri": "/dist/static/res/7ac5050f1.footer.js",
                 "type": "js",
                 "path": "src/static/js/footer.jsx",
                 "deps": [
@@ -42,16 +47,8 @@
                     "classNames"
                 ]
             },
-            "widget_index": {
-                "uri": "/dist/static/res/ae191532c.app.js",
-                "type": "js",
-                "path": "src/static/js/app.js",
-                "deps": [
-                    "App"
-                ]
-            },
             "main": {
-                "uri": "/dist/static/res/b9d571e11.index.js",
+                "uri": "/dist/static/res/831d64cf2.index.js",
                 "type": "js",
                 "path": "src/static/js/index.js",
                 "deps": [
@@ -59,7 +56,7 @@
                 ]
             },
             "TodoItem": {
-                "uri": "/dist/static/res/fecbc6a8f.todoItem.js",
+                "uri": "/dist/static/res/b50bae724.todoItem.js",
                 "type": "js",
                 "path": "src/static/js/todoItem.jsx",
                 "deps": [
@@ -67,20 +64,25 @@
                 ]
             },
             "TodoModel": {
-                "uri": "/dist/static/res/06ab2821c.todoModel.js",
+                "uri": "/dist/static/res/6c827a2e7.todoModel.js",
                 "type": "js",
                 "path": "src/static/js/todoModel.js",
                 "deps": [
                     "R5dEk"
                 ]
             },
-            "VJS5Q": {
-                "uri": "/dist/static/res/6c612c442.react-with-addons.js",
+            "AGJo8": {
+                "uri": "/dist/static/res/4d998d383.react.dom.js",
                 "type": "js",
-                "path": "src/lib/react-with-addons.js"
+                "path": "src/lib/react.dom.js"
+            },
+            "5OUJ9": {
+                "uri": "/dist/static/res/0bd11eefd.react.js",
+                "type": "js",
+                "path": "src/lib/react.js"
             },
             "R5dEk": {
-                "uri": "/dist/static/res/c5c14c85b.utils.js",
+                "uri": "/dist/static/res/cda8a81f7.utils.js",
                 "type": "js",
                 "path": "src/static/js/utils.js"
             }
@@ -101,19 +103,19 @@
     "paths": {
         "src/lib/classNames.js": "classNames",
         "src/lib/kernel.js": "kernel",
+        "src/lib/modux.js": "modux",
         "src/lib/quickling.js": "quickling",
         "src/lib/router.js": "React.Router",
         "src/static/js/app.jsx": "App",
         "src/static/js/footer.jsx": "TodoFooter",
-        "src/static/js/app.js": "widget_index",
         "src/static/js/index.js": "main",
         "src/static/js/todoItem.jsx": "TodoItem",
         "src/static/js/todoModel.js": "TodoModel",
-        "src/lib/react-with-addons.js": "VJS5Q",
+        "src/lib/react.dom.js": "AGJo8",
+        "src/lib/react.js": "5OUJ9",
         "src/static/js/utils.js": "R5dEk",
         "src/static/css/base.css": "base-style",
         "src/static/css/index.css": "index-style"
     },
-    "packages": {},
     "cssClassMap": {}
 }
