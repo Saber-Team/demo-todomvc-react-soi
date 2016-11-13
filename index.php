@@ -1,11 +1,10 @@
 <?php
 
-require_once 'third_party/src/__init__.php';
-require_once 'views/TodoMVCPageView.php';
+include_once 'third_party/src/__init__.php';
+include_once 'views/TodoPageView.php';
 
-$page = new TodoMVCPageView('React • TodoMVC');
-$page->setPrintType(BriskPrintType::$NO_MAP);
+define('BRISK_MAP_DIRECTORY', __DIR__ . DIRECTORY_SEPARATOR . 'dist');
+define('BRISK_COMPILE_DIRECTORY', __DIR__);
 
-header('Content-Type', 'text/html');
-
-echo $page->render();
+$page = new TodoPageView('React • TodoMVC');
+$page->render();

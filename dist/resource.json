@@ -1,35 +1,48 @@
 {
+    "root": "/Users/baidu/Git/demo-todomvc-react-soi",
     "resource": {
         "js": {
             "classNames": {
                 "uri": "/dist/static/res/fab6ab2bb.classNames.js",
                 "type": "js",
-                "path": "src/lib/classNames.js"
+                "path": "src/lib/classNames.js",
+                "localPathName": "/dist/static/res/fab6ab2bb.classNames.js",
+                "version": "fab6ab2bb"
             },
             "kernel": {
                 "uri": "/dist/static/res/3693beaf4.kernel.js",
                 "type": "js",
-                "path": "src/lib/kernel.js"
+                "path": "src/lib/kernel.js",
+                "localPathName": "/dist/static/res/3693beaf4.kernel.js",
+                "version": "3693beaf4"
             },
             "modux": {
                 "uri": "/dist/static/res/cc4bd683b.modux.js",
                 "type": "js",
-                "path": "src/lib/modux.js"
+                "path": "src/lib/modux.js",
+                "localPathName": "/dist/static/res/cc4bd683b.modux.js",
+                "version": "cc4bd683b"
             },
             "quickling": {
                 "uri": "/dist/static/res/bacb625ff.quickling.js",
                 "type": "js",
-                "path": "src/lib/quickling.js"
+                "path": "src/lib/quickling.js",
+                "localPathName": "/dist/static/res/bacb625ff.quickling.js",
+                "version": "bacb625ff"
             },
             "React.Router": {
                 "uri": "/dist/static/res/5b139cecf.router.js",
                 "type": "js",
-                "path": "src/lib/router.js"
+                "path": "src/lib/router.js",
+                "localPathName": "/dist/static/res/5b139cecf.router.js",
+                "version": "5b139cecf"
             },
             "App": {
                 "uri": "/dist/static/res/a9369931b.app.js",
                 "type": "js",
                 "path": "src/static/js/app.jsx",
+                "localPathName": "/dist/static/res/a9369931b.app.js",
+                "version": "a9369931b",
                 "deps": [
                     "React.Router",
                     "TodoFooter",
@@ -42,6 +55,8 @@
                 "uri": "/dist/static/res/7ac5050f1.footer.js",
                 "type": "js",
                 "path": "src/static/js/footer.jsx",
+                "localPathName": "/dist/static/res/7ac5050f1.footer.js",
+                "version": "7ac5050f1",
                 "deps": [
                     "R5dEk",
                     "classNames"
@@ -51,6 +66,8 @@
                 "uri": "/dist/static/res/831d64cf2.index.js",
                 "type": "js",
                 "path": "src/static/js/index.js",
+                "localPathName": "/dist/static/res/831d64cf2.index.js",
+                "version": "831d64cf2",
                 "deps": [
                     "App"
                 ]
@@ -59,6 +76,8 @@
                 "uri": "/dist/static/res/b50bae724.todoItem.js",
                 "type": "js",
                 "path": "src/static/js/todoItem.jsx",
+                "localPathName": "/dist/static/res/b50bae724.todoItem.js",
+                "version": "b50bae724",
                 "deps": [
                     "classNames"
                 ]
@@ -67,6 +86,8 @@
                 "uri": "/dist/static/res/6c827a2e7.todoModel.js",
                 "type": "js",
                 "path": "src/static/js/todoModel.js",
+                "localPathName": "/dist/static/res/6c827a2e7.todoModel.js",
+                "version": "6c827a2e7",
                 "deps": [
                     "R5dEk"
                 ]
@@ -74,29 +95,39 @@
             "AGJo8": {
                 "uri": "/dist/static/res/4d998d383.react.dom.js",
                 "type": "js",
-                "path": "src/lib/react.dom.js"
+                "path": "src/lib/react.dom.js",
+                "localPathName": "/dist/static/res/4d998d383.react.dom.js",
+                "version": "4d998d383"
             },
             "5OUJ9": {
                 "uri": "/dist/static/res/0bd11eefd.react.js",
                 "type": "js",
-                "path": "src/lib/react.js"
+                "path": "src/lib/react.js",
+                "localPathName": "/dist/static/res/0bd11eefd.react.js",
+                "version": "0bd11eefd"
             },
             "R5dEk": {
                 "uri": "/dist/static/res/cda8a81f7.utils.js",
                 "type": "js",
-                "path": "src/static/js/utils.js"
+                "path": "src/static/js/utils.js",
+                "localPathName": "/dist/static/res/cda8a81f7.utils.js",
+                "version": "cda8a81f7"
             }
         },
         "css": {
             "base-style": {
                 "uri": "/dist/static/res/3267f6926.base.css",
                 "type": "css",
-                "path": "src/static/css/base.css"
+                "path": "src/static/css/base.css",
+                "localPathName": "/dist/static/res/3267f6926.base.css",
+                "version": "3267f6926"
             },
             "index-style": {
                 "uri": "/dist/static/res/7da1ffab8.index.css",
                 "type": "css",
-                "path": "src/static/css/index.css"
+                "path": "src/static/css/index.css",
+                "localPathName": "/dist/static/res/7da1ffab8.index.css",
+                "version": "7da1ffab8"
             }
         }
     },
